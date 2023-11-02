@@ -17,20 +17,18 @@ const readFile = (fileName: string ) => new Promise<any[]>((resolve, reject) => 
 });
 
 app.post(
-    '/test', 
+    '/upload', 
     upload.single('file'), 
     async ( req, res, next ) => { 
         const fileContents: any[] = await readFile((req as any).file.path);    
         res.json(fileContents);
     }
 );
-app.get('/test', async ( req, res, next ) => { 
-    res.send("get working");
-})
 
 app.get('/',(req: Request, res: Response, next: NextFunction) => {
-    res.send("Root route is working");
+    res.send("Root route is working!");
 });
+
 app.listen(3000,() => {
     console.log("Server listening on port 3000");
 });
