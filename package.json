@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node build/index.js",
+    "start:dev": "nodemon src/index.ts",
     "tsc": "tsc",
     "build": "tsc"
   },
@@ -16,11 +17,14 @@
     "csv-parser": "^3.0.0",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
+    "mongoose": "^8.0.0",
     "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.19",
     "@types/multer": "^1.4.8",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
 }
