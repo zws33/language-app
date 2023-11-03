@@ -1,3 +1,4 @@
+version: '3'
 services:
   app:
     container_name: app
@@ -7,13 +8,19 @@ services:
     volumes:
       - '.:/app'
       - /app/node_modules
+      - 'storage:/app/tmp/test/csv'
     depends_on:
       - mongo
 
   mongo:
-    restart: always
     image: mongo
     volumes:
-      - ./data:/data/db
-    expose:
-      - 27017
+      - mongo-db:/data/db
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+volumes:
+  mongo-db:
+  storage:
