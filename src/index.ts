@@ -1,34 +1,24 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction, Express } from "express";
+import { connectWithRetry } from "./db/connect";
+import { upload, readFile } from "./fileupload/fileupload";
+import UserRouter from "./controllers/usercontroller";
+import * as Middleware from "./controllers/middleware";
 
-import csv from 'csv-parser';
-import multer from 'multer';
-import fs from 'fs';
+const app: Express = express();
+app.use(express.json());
+connectWithRetry();
 
-const app: Application = express();
-
-const upload = multer({dest: 'tmp/test/csv'});
-const readFile = (fileName: string ) => new Promise<any[]>((resolve, reject) => {    
-    const stream: any = [];
-    fs.createReadStream(fileName).pipe(csv()) 
-      .on('data', (data) => stream.push(data))
-      .on('end', () => {
-         resolve(stream)
-    });
+app.post("/upload", Middleware.isLoggedIn, upload.single("file"), async (req, res, next) => {
+  const fileContents: any[] = await readFile((req as any).file.path);
+  res.json(fileContents);
 });
 
-app.post(
-    '/upload', 
-    upload.single('file'), 
-    async ( req, res, next ) => { 
-        const fileContents: any[] = await readFile((req as any).file.path);    
-        res.json(fileContents);
-    }
-);
+app.use("/user", UserRouter);
 
-app.get('/',(req: Request, res: Response, next: NextFunction) => {
-    res.send("Root route is working!");
+app.get("/", (req: Request, res: Response, next: NextFunction) => {
+  res.send("Root route is working!");
 });
 
-app.listen(3000,() => {
-    console.log("Server listening on port 3000");
+app.listen(3000, () => {
+  console.log("Server listening on port 3000");
 });
