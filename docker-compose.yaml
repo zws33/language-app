@@ -16,9 +16,11 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - '.:/app'
+      - .:/app
       - /app/node_modules
-      - 'storage:/app/tmp/test/csv'
+      - storage:/app/tmp/test/csv
+    env_file:
+      - .env
     depends_on:
       - mongo
 
@@ -28,9 +30,11 @@ services:
       - mongo-db:/data/db
     ports:
       - '27017:27017'
+    env_file:
+      - .env
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
 
 volumes:
   mongo-db:

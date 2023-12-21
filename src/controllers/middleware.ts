@@ -12,7 +12,8 @@ export async function isLoggedIn(
       // parse token from header
       const token = req.headers.authorization.split(" ")[1]; //split the header and get the token
       if (token) {
-        const payload = await jwt.verify(token, "secret");
+        let secret = process.env.SESSION_SECRET as string
+        const payload = await jwt.verify(token, secret);
         if (payload) {
           // store user data in request object
           next();

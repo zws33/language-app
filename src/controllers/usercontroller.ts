@@ -3,8 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../db/models/user"
 
-const UserRouter = Router(); // create router to create route bundle
-
+const UserRouter = Router();
 interface ISignUpBody {
   username: string;
   password: string;
@@ -19,14 +18,12 @@ UserRouter.post("/signup", async (req: ISignupRequest, res) => {
   try {
     // hash the password
     req.body.password = await bcrypt.hash(req.body.password, 10);
-    console.log(req.body.password);
     // create a new user
     const user = await User.create(req.body);
-    console.log(user);
     // send new user as response
     res.json(user);
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(400).send(`error: ${error}`);
   }
 });
 
@@ -39,7 +36,7 @@ interface ILoginRequest extends Request {
   body: ILoginBody;
 }
 
-const SECRET = "secret";
+const SECRET = process.env.SESSION_SECRET as string;
 
 // Login route to verify a user and get a token
 UserRouter.post("/login", async (req: ILoginRequest, res) => {
