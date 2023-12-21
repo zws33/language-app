@@ -14,7 +14,7 @@ services:
     container_name: app
     platform: "linux/amd64"
     build:
-      context: ./
+      context: ./node_app
     ports:
       - '3000:3000'
     volumes:
