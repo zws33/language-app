@@ -1,10 +1,13 @@
 version: '3'
 services:
-  app:
-    container_name: app
-    image: zws33/file-upload-app:latest
+  frontend:
+    image: zws33/file-upload-app-frontend:latest
     ports:
-      - '3000:3000'
+      - "3000:80"
+  backend:
+    image: zws33/file-upload-app-backend:latest
+    ports:
+      - '3001:3001'
     volumes:
       - .:/app
       - /app/node_modules
