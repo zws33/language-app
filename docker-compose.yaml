@@ -7,16 +7,26 @@ services:
       - "443:443"
     restart: unless-stopped
     volumes:
-      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - /root/ssl/:/etc/nginx/ssl/
+    depends_on:
+      - frontend
+      - backend
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
 
-  app:
-    container_name: app
+  backend:
     platform: "linux/amd64"
     build:
-      context: ./node_app
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - "3001:3001"
     volumes:
       - .:/app
       - /app/node_modules
