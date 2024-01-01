@@ -14,11 +14,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
 
       - name: Determine changed folders
         id: changed-files
-        run: echo "::set-output name=folders::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^./' | cut -d/ -f1 | uniq)"
+        run: echo "::set-output name=folders::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^/backend/' | cut -d/ -f1 | uniq)"
 
       - name: Build and publish Docker images
         if: ${{ steps.changed-files.outputs.folders != '' }}
