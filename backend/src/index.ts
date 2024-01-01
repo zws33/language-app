@@ -13,7 +13,7 @@ app.post("/upload", Middleware.isLoggedIn, upload.single("file"), async (req, re
   res.json(fileContents);
 });
 
-console.log("testing");
+console.log("testing!");
 
 app.use("/user", UserRouter);
 
