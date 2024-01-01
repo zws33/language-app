@@ -1,0 +1,29 @@
+name: Docker Build & Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Determine changed folders
+        id: changed-files
+        run: echo "::set-output name=folders::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^./' | cut -d/ -f1 | uniq)"
+
+      - name: Build and publish Docker images
+        if: ${{ steps.changed-files.outputs.folders != '' }}
+        run: |
+          for folder in ${{ steps.changed-files.outputs.folders }}; do
+            docker build -t zws33/file-upload-app:$folder $folder
+            docker push zws33/file-upload-app:$folder
+          done
