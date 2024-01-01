@@ -1,0 +1,31 @@
+import { Router, Request, Response } from "express";
+const TranslationRouter = Router();
+TranslationRouter.post("/", async (req: Request, res: Response) => {
+    let text = req.query.text as string;
+    let targetLanguage = req.query.target_lang as string;
+    const apiUrl = 'http://translation_service:8080/translate';
+    const queryParams = {
+        text: text,
+        target_lang: targetLanguage,
+    };
+
+    const queryString = new URLSearchParams(queryParams).toString();
+    const fullUrl = `${apiUrl}?${queryString}`;
+    console.log(fullUrl);
+
+    try {
+        const response = await fetch(fullUrl, {
+            method: 'POST'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        res.send(data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+})
+export default TranslationRouter
