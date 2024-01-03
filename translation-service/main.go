@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/zws33/file-upload-app/translation-service/server"
+	"github.com/zws33/language-app/translation-service/server"
 )
 
 func main() {
