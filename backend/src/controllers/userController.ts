@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../db/models/user"
 
 const UserRouter = Router();
+
 interface ISignUpBody {
   username: string;
   password: string;
@@ -60,4 +61,7 @@ UserRouter.post("/login", async (req: ILoginRequest, res) => {
     res.status(400).json({ error });
   }
 });
+
 export default UserRouter;
+
+// test
