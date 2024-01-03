@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction, Express } from "express";
 import { connectWithRetry } from "./db/connect";
-import UserRouter from "./controllers/usercontroller";
-import TranslationRouter from "./fileupload/translationcontroller";
+import UserRouter from "./controllers/userController";
+import TranslationRouter from "./controllers/translationController";
 
 const app: Express = express();
 app.use(express.json());

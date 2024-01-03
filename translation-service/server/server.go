@@ -35,7 +35,7 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer response.Body.Close()
-	body, err := io.ReadAll(response.Body)
+	body, _ := io.ReadAll(response.Body)
 	w.Write(body)
 }
 

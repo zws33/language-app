@@ -11,7 +11,6 @@ TranslationRouter.post("/", async (req: Request, res: Response) => {
 
     const queryString = new URLSearchParams(queryParams).toString();
     const fullUrl = `${apiUrl}?${queryString}`;
-    console.log(fullUrl);
 
     try {
         const response = await fetch(fullUrl, {
