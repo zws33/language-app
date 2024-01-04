@@ -1,5 +1,4 @@
-
-name: Build and publish image
+name: Build and publish frontend docker image
 
 on:
   push:
