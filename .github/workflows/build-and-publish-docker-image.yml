@@ -1,14 +1,27 @@
-name: Publish translation service docker image
+name: Build and publish docker image
 
-on: workflow_dispatch
-
-
+on: 
+  workflow_dispatch:
+    inputs:
+      serviceName:
+        description: 'Docker image to be published'
+        required: true
+        type: choice
+        options:
+        - backend
+        - frontend
+        - translation-service
 jobs:
-  
+  log-input:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Service name: $SERVICE_NAME"
+        env:
+          SERVICE_NAME: ${{ inputs.serviceName }}
   build:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -16,7 +29,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v5
         with:
-          images: zws33/language-app-translation-service
+          images: zws33/language-app-${{inputs.serviceName}}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -35,7 +48,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./translation-service
+          context: ./${{inputs.serviceName}}
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           
