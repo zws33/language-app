@@ -1,11 +1,11 @@
 version: '3'
 services:
   frontend:
-    image: zws33/language-app-frontend:latest
+    image: zws33/language-app-frontend:main
     ports:
       - "3000:80"
   backend:
-    image: zws33/language-app-backend:latest
+    image: zws33/language-app-backend:main
     ports:
       - '3001:3001'
     volumes:
@@ -17,7 +17,7 @@ services:
     depends_on:
       - mongo
   translation_service:
-    image: zws33/language-app-translation_service:latest
+    image: zws33/language-app-translation_service:main
     ports:
       - "8080:8080"
     env_file:
