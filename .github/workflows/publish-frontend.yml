@@ -22,6 +22,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: "Log"
+        run: |
+          echo ./{{SERVICE_NAME}}
 
       - name: Checkout code
         uses: actions/checkout@v4
