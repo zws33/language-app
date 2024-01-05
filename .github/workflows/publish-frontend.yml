@@ -22,10 +22,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: "Log"
-        run: |
-          echo ./{{SERVICE_NAME}}
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -52,7 +48,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: "./{{SERVICE_NAME}}"
+          context: ${{"./$SERVICE_NAME"}}
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           
