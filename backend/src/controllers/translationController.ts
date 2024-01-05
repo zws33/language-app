@@ -14,7 +14,10 @@ TranslationRouter.post("/", async (req: Request, res: Response) => {
 
     try {
         const response = await fetch(fullUrl, {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }
         });
 
         if (!response.ok) {
