@@ -10,7 +10,7 @@ interface Translation {
 }
 
 async function getTranslation(inputValue: string): Promise<TranslationResponse | string> {
-    let translateUrl = `http://localhost:3001/translate?target_lang=ES&text=${inputValue}`
+    let translateUrl = `https://zwsmith.me/api/translate?target_lang=ES&text=${inputValue}`
     let response = await fetch(translateUrl, {
         method: 'POST',
         headers: {
