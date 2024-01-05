@@ -1,0 +1,42 @@
+name: Publish translation service docker image
+
+on: workflow_dispatch
+
+
+jobs:
+  
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: metadata
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: zws33/language-app-translation-service
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+    
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./translation-service
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          
+    
