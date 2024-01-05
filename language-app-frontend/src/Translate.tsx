@@ -1,17 +1,26 @@
 import React, { useState, FormEvent } from 'react';
 
-async function getTranslation(inputValue: string): Promise<string> {
+interface TranslationResponse {
+    translations: Translation[]
+}
+
+interface Translation {
+    detected_source_language: string,
+    text: string
+}
+
+async function getTranslation(inputValue: string): Promise<TranslationResponse | string> {
     let translateUrl = `http://localhost:3001/translate?target_lang=ES&text=${inputValue}`
     let response = await fetch(translateUrl, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         }
     })
     if (!response.ok) {
-        return "Error"
+        return "error"
     } else {
-        return response.json()
+        return response.json() 
     }
 }
 
@@ -27,7 +36,8 @@ const TranslateForm: React.FC = () => {
         try {
 
             let result = await getTranslation(inputValue);
-            setResultText(result)
+            let text = (result as TranslationResponse).translations[0].text
+            setResultText(text)
         } catch (e) {
             console.log(e)
         }

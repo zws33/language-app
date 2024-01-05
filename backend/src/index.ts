@@ -7,7 +7,7 @@ import cors from "cors";
 const app: Express = express();
 app.use(express.json());
 connectWithRetry();
-app.use(cors<Request>);
+app.use(cors<Request>());
 
 app.use("/user", UserRouter);
 app.use("/translate", TranslationRouter);
