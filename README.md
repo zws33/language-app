@@ -86,5 +86,5 @@ CREATE TABLE Word_Tag (
 )
 ```
 #### Translation service:
-- Go
-- Talks to [DeepL API](https://www.deepl.com/docs-api) for fetching translations
+	- Go
+	- Talks to [DeepL API](https://www.deepl.com/docs-api) for fetching translations
