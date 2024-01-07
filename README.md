@@ -71,8 +71,8 @@ CREATE TABLE Language (
 
 CREATE TABLE Translation (
     translation_id SERIAL PRIMARY KEY,
-	first_word_id INT REFERENCES Word(first_word_id),
-	second_word_id INT REFERENCES Word(second_word_id)
+	first_word_id INT REFERENCES Word(word_id),
+	second_word_id INT REFERENCES Word(word_id)
 )
 
 CREATE TABLE Tag (
