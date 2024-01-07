@@ -60,7 +60,7 @@ graph TD
 ```sql
 CREATE TABLE Word (
     word_id SERIAL PRIMARY KEY,
-    word_text VARCHAR(100) NOT NULL
+    word_text VARCHAR(100) NOT NULL,
     language_id INT REFERENCES Languages(language_id),
 );
 
@@ -71,8 +71,8 @@ CREATE TABLE Language (
 
 CREATE TABLE Translation (
     translation_id SERIAL PRIMARY KEY,
-	word_id INT REFERENCES Word(word_id),
-	word_id INT REFERENCES Word(word_id)
+	first_word_id INT REFERENCES Word(first_word_id),
+	second_word_id INT REFERENCES Word(second_word_id)
 )
 
 CREATE TABLE Tag (
@@ -81,7 +81,7 @@ CREATE TABLE Tag (
 )
 
 CREATE TABLE Word_Tag (
-    word_id INT REFERENCES Word(word_id)
+    word_id INT REFERENCES Word(word_id),
     tag_id INT REFERENCES Tag(tag_id)
 )
 ```
