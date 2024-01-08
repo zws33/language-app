@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model language {
+  language_id   Int    @id @default(autoincrement())
+  language_code String @db.VarChar(3)
+  word          word[]
+}
+
+model tag {
+  tag_id   Int        @id @default(autoincrement())
+  tag_text String?    @db.VarChar(500)
+  word_tag word_tag[]
+}
+
+model translation {
+  translation_id                        Int   @id @default(autoincrement())
+  first_word_id                         Int?
+  second_word_id                        Int?
+  word_translation_first_word_idToword  word? @relation("translation_first_word_idToword", fields: [first_word_id], references: [word_id], onDelete: NoAction, onUpdate: NoAction)
+  word_translation_second_word_idToword word? @relation("translation_second_word_idToword", fields: [second_word_id], references: [word_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model word {
+  word_id                                      Int           @id @default(autoincrement())
+  word_text                                    String        @db.VarChar(100)
+  language_id                                  Int?
+  translation_translation_first_word_idToword  translation[] @relation("translation_first_word_idToword")
+  translation_translation_second_word_idToword translation[] @relation("translation_second_word_idToword")
+  language                                     language?     @relation(fields: [language_id], references: [language_id], onDelete: NoAction, onUpdate: NoAction)
+  word_tag                                     word_tag[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model word_tag {
+  word_id Int
+  tag_id  Int
+  tag     tag  @relation(fields: [tag_id], references: [tag_id], onDelete: NoAction, onUpdate: NoAction)
+  word    word @relation(fields: [word_id], references: [word_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([word_id, tag_id])
+}
