@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction, Express } from "express";
 import TranslationRouter from "./controllers/translationController";
 import cors from "cors";
+import { testDbConnection } from "./db/prismaClient";
 
 const app: Express = express();
 app.use(express.json());
@@ -15,3 +16,5 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 app.listen(3001, () => {
   console.log("Server listening on port 3000");
 });
+
+testDbConnection();
