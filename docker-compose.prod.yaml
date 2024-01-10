@@ -14,8 +14,7 @@ services:
       - storage:/app/tmp/test/csv
     env_file:
       - .env
-    depends_on:
-      - mongo
+      
   translation_service:
     image: zws33/language-app-translation_service:main
     ports:

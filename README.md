@@ -18,7 +18,7 @@ graph TD
     translationService("Translation Service (go)")
     translationStore("Translation Store (node)")
     translationApi{Translation Api}
-    mongo[(MongoDB)]
+    postgres[(Postgres)]
     
     languageLearner -->|uses| reverseProxy
     languageLearner -->|uses| webClient
@@ -36,7 +36,7 @@ graph TD
     
     translationService --> translationApi
     
-    translationStore --> mongo
+    translationStore --> postgres
 ```
 ### Frontend
 #### Web Client
