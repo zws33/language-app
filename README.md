@@ -14,25 +14,25 @@ graph TD
     reverseProxy(Reverse Proxy)
     webClient("Web Client (React Spa)")
     mobileClient("Mobile Client (TBD)")
-    apiPerimeter("Api Perimeter (Node)")
-    translationService("Translation Service (go)")
-    translationStore("Translation Store (node)")
+    translationApp("Translation App (node)")
     translationApi{Translation Api}
+    translationService("Translation Service (go)")
+
     postgres[(Postgres)]
     
     languageLearner -->|uses| reverseProxy
     languageLearner -->|uses| webClient
     languageLearner -->|uses| mobileClient
         
-    webClient --> reverseProxy    
+    webClient --> |calls| reverseProxy    
     
     mobileClient --> reverseProxy
     
-    reverseProxy --> apiPerimeter
-    reverseProxy --> |Delivers | webClient    
+    reverseProxy --> translationApp
+    reverseProxy --> |Delivers| webClient    
     
-    apiPerimeter --> translationService
-    apiPerimeter --> translationStore
+    translationApp --> translationService
+    translationApp --> translationStore
     
     translationService --> translationApi
     
@@ -40,6 +40,7 @@ graph TD
 ```
 ### Frontend
 #### Web Client
+- Domain: `zwsmith.me/`
 - Serves a UI for interacting with the language app.
 - Single Page App - React
 - Features:
@@ -61,6 +62,7 @@ graph TD
 CREATE TABLE Word (
     word_id SERIAL PRIMARY KEY,
     word_text VARCHAR(100) NOT NULL,
+    word_text VARCHAR(100) NOT NULL,
     language_id INT REFERENCES Languages(language_id),
 );
 
@@ -73,6 +75,8 @@ CREATE TABLE Translation (
     translation_id SERIAL PRIMARY KEY,
 	first_word_id INT REFERENCES Word(word_id),
 	second_word_id INT REFERENCES Word(word_id)
+	first_word_id INT REFERENCES Word(word_id),
+	second_word_id INT REFERENCES Word(word_id)
 )
 
 CREATE TABLE Tag (
@@ -81,10 +85,11 @@ CREATE TABLE Tag (
 )
 
 CREATE TABLE Word_Tag (
-    word_id INT REFERENCES Word(word_id),
-    tag_id INT REFERENCES Tag(tag_id)
+    word_id INT REFERENCES Word(word_id),,
+    tag_id INT REFERENCES Tag(tag_id),
+    PRIMARY KEY (word_id, tag_id)
 )
 ```
 #### Translation service:
-	- Go
-	- Talks to [DeepL API](https://www.deepl.com/docs-api) for fetching translations
+	- Web server written in Go
+	- Is basically a wrapper around [DeepL API](https://www.deepl.com/docs-api) which is used for fetching translations
