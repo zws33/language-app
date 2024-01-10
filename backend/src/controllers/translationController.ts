@@ -3,7 +3,7 @@ const TranslationRouter = Router();
 TranslationRouter.post("/", async (req: Request, res: Response) => {
     let text = req.query.text as string;
     let targetLanguage = req.query.target_lang as string;
-    const apiUrl = 'http://translation_service:8080/translate';
+    const apiUrl = process.env.TRANSLATION_SERVICE_URL as string;
     const queryParams = {
         text: text,
         target_lang: targetLanguage,

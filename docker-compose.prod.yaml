@@ -4,6 +4,7 @@ services:
     image: zws33/language-app-frontend:main
     ports:
       - "3000:80"
+      
   backend:
     image: zws33/language-app-backend:main
     ports:
@@ -11,10 +12,9 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-      - storage:/app/tmp/test/csv
     env_file:
       - .env
-      
+
   translation_service:
     image: zws33/language-app-translation_service:main
     ports:
