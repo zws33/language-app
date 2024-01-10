@@ -16,7 +16,7 @@ services:
       - .env
 
   translation_service:
-    image: zws33/language-app-translation_service:main
+    image: zws33/language-app-translation-service:main
     ports:
       - "8080:8080"
     env_file:
