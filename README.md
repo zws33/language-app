@@ -7,6 +7,12 @@
 - The app allows multiple translations
 ## Overview
 
+### Running the app locally:
+The app uses docker for building and deployment. To run the app locally:
+- clone the repo
+- Install [Docker](https://docs.docker.com/get-docker/) 
+- Run the following command: `docker-compose -f docker-compose.yaml up frontend --build -d`
+
 ### Diagram
 ```mermaid
 graph TD
@@ -48,9 +54,11 @@ graph TD
 	- Search for translations
 	- Set tags for words in order to group them
 	- View entered words by tag
+
 #### Mobile Client
  - TBD
  - Native iOS? React Native? Flutter?
+
 ### Backend
 #### Vocab API
 - Domain: `zwsmith.me/api/`
@@ -75,8 +83,6 @@ CREATE TABLE Translation (
     translation_id SERIAL PRIMARY KEY,
 	first_word_id INT REFERENCES Word(word_id),
 	second_word_id INT REFERENCES Word(word_id)
-	first_word_id INT REFERENCES Word(word_id),
-	second_word_id INT REFERENCES Word(word_id)
 )
 
 CREATE TABLE Tag (
@@ -85,7 +91,7 @@ CREATE TABLE Tag (
 )
 
 CREATE TABLE Word_Tag (
-    word_id INT REFERENCES Word(word_id),,
+    word_id INT REFERENCES Word(word_id),
     tag_id INT REFERENCES Tag(tag_id),
     PRIMARY KEY (word_id, tag_id)
 )
