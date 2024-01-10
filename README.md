@@ -7,6 +7,12 @@
 - The app allows multiple translations
 ## Overview
 
+### Running the app locally:
+The app uses docker for building and deployment. To run the app locally:
+- clone the repo
+- Install [Docker](https://docs.docker.com/get-docker/) 
+- Run the following command: `docker-compose -f docker-compose.yaml up frontend --build -d`
+
 ### Diagram
 ```mermaid
 graph TD
@@ -14,32 +20,33 @@ graph TD
     reverseProxy(Reverse Proxy)
     webClient("Web Client (React Spa)")
     mobileClient("Mobile Client (TBD)")
-    apiPerimeter("Api Perimeter (Node)")
-    translationService("Translation Service (go)")
-    translationStore("Translation Store (node)")
+    translationApp("Translation App (node)")
     translationApi{Translation Api}
-    mongo[(MongoDB)]
+    translationService("Translation Service (go)")
+
+    postgres[(Postgres)]
     
     languageLearner -->|uses| reverseProxy
     languageLearner -->|uses| webClient
     languageLearner -->|uses| mobileClient
         
-    webClient --> reverseProxy    
+    webClient --> |calls| reverseProxy    
     
     mobileClient --> reverseProxy
     
-    reverseProxy --> apiPerimeter
-    reverseProxy --> |Delivers | webClient    
+    reverseProxy --> translationApp
+    reverseProxy --> |Delivers| webClient    
     
-    apiPerimeter --> translationService
-    apiPerimeter --> translationStore
+    translationApp --> translationService
+    translationApp --> translationStore
     
     translationService --> translationApi
     
-    translationStore --> mongo
+    translationStore --> postgres
 ```
 ### Frontend
 #### Web Client
+- Domain: `zwsmith.me/`
 - Serves a UI for interacting with the language app.
 - Single Page App - React
 - Features:
@@ -47,9 +54,11 @@ graph TD
 	- Search for translations
 	- Set tags for words in order to group them
 	- View entered words by tag
+
 #### Mobile Client
  - TBD
  - Native iOS? React Native? Flutter?
+
 ### Backend
 #### Vocab API
 - Domain: `zwsmith.me/api/`
@@ -60,6 +69,7 @@ graph TD
 ```sql
 CREATE TABLE Word (
     word_id SERIAL PRIMARY KEY,
+    word_text VARCHAR(100) NOT NULL,
     word_text VARCHAR(100) NOT NULL,
     language_id INT REFERENCES Languages(language_id),
 );
@@ -82,9 +92,10 @@ CREATE TABLE Tag (
 
 CREATE TABLE Word_Tag (
     word_id INT REFERENCES Word(word_id),
-    tag_id INT REFERENCES Tag(tag_id)
+    tag_id INT REFERENCES Tag(tag_id),
+    PRIMARY KEY (word_id, tag_id)
 )
 ```
 #### Translation service:
-	- Go
-	- Talks to [DeepL API](https://www.deepl.com/docs-api) for fetching translations
+	- Web server written in Go
+	- Is basically a wrapper around [DeepL API](https://www.deepl.com/docs-api) which is used for fetching translations
