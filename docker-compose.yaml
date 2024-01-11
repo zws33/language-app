@@ -30,5 +30,3 @@ services:
       - "8080:8080"
     env_file:
       - ./translation-service/.env
-    environment:
-      TRANSLATION_API_KEY: ${DEEPL_KEY}
