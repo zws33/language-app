@@ -24,9 +24,8 @@ services:
       - '3001:3001'
     volumes:
       - .:/app
-      - /app/node_modules
     env_file:
-      - .env
+      - ./backend/.env
 
   translation-service:
     image: zws33/language-app-translation-service:main
