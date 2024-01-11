@@ -12,6 +12,8 @@ The app uses docker for building and deployment. To run the app locally:
 - clone the repo
 - Install [Docker](https://docs.docker.com/get-docker/) 
 - Run the following command: `docker-compose -f docker-compose.yaml up frontend --build -d`
+- Open `localhost:3000/` in the browser to test the UI
+- The API can be tested at `localhost:3001/`
 
 ### Diagram
 ```mermaid
