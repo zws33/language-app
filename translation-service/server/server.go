@@ -1,10 +1,11 @@
 package server
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/json"
 	"io"
+	"log"
 	"net/http"
-	"net/url"
 	"os"
 )
 
@@ -22,32 +23,64 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func translateHandler(w http.ResponseWriter, r *http.Request) {
-	requestParams := r.URL.Query()
 
-	text := requestParams.Get("text")
-	targetLanguage := requestParams.Get("target_lang")
+	translationRequest, decodingError := getTranslationRequestData(r)
+	if decodingError != nil {
+		log.Println(decodingError.Error())
+		http.Error(w, decodingError.Error(), http.StatusBadRequest)
+		return
+	}
 
-	request := buildDeepLTranslationRequest(text, targetLanguage)
+	// Create an encoder and encode the JSON data directly into the buffer
+	request, err := buildDeepLRequest(translationRequest.Text, translationRequest.TargetLanguage)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	response, err := http.DefaultClient.Do(request)
+
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer response.Body.Close()
-	body, _ := io.ReadAll(response.Body)
-	w.Write(body)
+
+	responseBody, _ := io.ReadAll(response.Body)
+	w.Write(responseBody)
 }
 
-func buildDeepLTranslationRequest(text string, targetLanguage string) *http.Request {
-	params := url.Values{}
-	params.Add("text", text)
-	params.Add("target_lang", targetLanguage)
+func buildDeepLRequest(text string, targetLanguage string) (*http.Request, error) {
+	requestParams := map[string]interface{}{
+		"text":        []string{text},
+		"target_lang": targetLanguage,
+	}
 
-	baseURL := fmt.Sprintf("https://api-free.deepl.com/v2/translate?" + params.Encode())
+	var requestBodyBuffer bytes.Buffer
+	err := json.NewEncoder(&requestBodyBuffer).Encode(requestParams)
+	if err != nil {
+		return nil, err
+	}
 
-	request, _ := http.NewRequest("POST", baseURL, nil)
+	url := os.Getenv("TRANSLATION_API_URL")
 	apiKey := os.Getenv("TRANSLATION_API_KEY")
+	request, err := http.NewRequest("POST", url, &requestBodyBuffer)
+	if err != nil {
+		return nil, err
+	}
+
 	request.Header.Set("Authorization", "DeepL-Auth-Key "+apiKey)
-	return request
+	request.Header.Set("Content-Type", "application/json")
+	return request, err
+}
+
+func getTranslationRequestData(r *http.Request) (TranslationRequest, error) {
+	var translationRequest TranslationRequest
+	err := json.NewDecoder(r.Body).Decode(&translationRequest)
+	return translationRequest, err
+}
+
+type TranslationRequest struct {
+	Text           string `json:"text"`
+	TargetLanguage string `json:"target_lang"`
 }
