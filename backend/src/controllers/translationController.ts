@@ -1,7 +1,9 @@
 import { Router, Request, Response } from "express";
 import { fetchTranslation } from "./fetchTranslation";
+import { CorsOptions } from "cors";
 
 const TranslationRouter = Router();
+
 TranslationRouter.post("/", async (req: Request, res: Response) => {
     let text = req.query.text as string;
     let targetLanguage = req.query.target_lang as string;

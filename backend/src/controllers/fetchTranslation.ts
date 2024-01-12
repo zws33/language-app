@@ -4,7 +4,6 @@ export async function fetchTranslation(text: string, targetLanguage: string): Pr
     const requestOptions = {
         method: 'POST',
         headers: {
-            'Access-Control-Allow-Origin': 'https://zwsmith.com',
             'Content-Type' : 'application/json'
         },
         body: JSON.stringify({
@@ -31,5 +30,3 @@ export interface Translation {
     detected_source_language: string;
     text: string;
 }
-
-

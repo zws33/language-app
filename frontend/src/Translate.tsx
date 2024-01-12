@@ -9,8 +9,12 @@ interface Translation {
     text: string
 }
 
-async function getTranslation(inputValue: string): Promise<TranslationResponse | string> {
-    let translateUrl = `https://zwsmith.me/api/translate?target_lang=ES&text=${inputValue}`
+type TranslationError = {
+    message: string
+}
+
+async function getTranslation(inputValue: string): Promise<TranslationResponse | TranslationError> {
+    let translateUrl = `${import.meta.env.VITE_API_URL}${inputValue}`
     let response = await fetch(translateUrl, {
         method: 'POST',
         headers: {
@@ -18,7 +22,7 @@ async function getTranslation(inputValue: string): Promise<TranslationResponse |
         }
     })
     if (!response.ok) {
-        return "error"
+        return { message: await response.text()}
     } else {
         return response.json() 
     }
