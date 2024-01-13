@@ -8,7 +8,7 @@ COPY . .
 RUN npm run build
 RUN npx prisma generate
 
-FROM build as prod
+FROM node:latest
 
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package*.json ./

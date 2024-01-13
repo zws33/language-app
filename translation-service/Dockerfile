@@ -1,5 +1,5 @@
 # Dockerfile
-FROM golang:alpine as prod
+FROM golang:alpine
 
 WORKDIR /app
 
