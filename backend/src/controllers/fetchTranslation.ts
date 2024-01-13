@@ -16,7 +16,9 @@ export async function fetchTranslation(text: string, targetLanguage: string): Pr
     if (response.ok) {
         return await response.json()
     } else {
-        console.log(response);
+        console.log("Error fetching translation");
+        console.log(`StatusCode: ${response.status}`);
+        console.log(`StatusText: ${response.statusText}`);
         throw new Error(`HTTP error! Status: ${response.status}`);
     }
 }
