@@ -10,9 +10,9 @@ RUN npx prisma generate
 
 FROM build as prod
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/build ./build
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/build ./build
 
 EXPOSE 3001
 
@@ -20,9 +20,9 @@ CMD ["npm", "run", "start"]
 
 FROM build as dev
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/build ./build
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/build ./build
 
 EXPOSE 3001
 
