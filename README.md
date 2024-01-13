@@ -68,6 +68,7 @@ graph TD
 - Store words and their translations
 - Keeps track of tags set by users and their associated word
 - Data:
+
 ```sql
 CREATE TABLE Word (
     word_id SERIAL PRIMARY KEY,
@@ -98,6 +99,7 @@ CREATE TABLE Word_Tag (
     PRIMARY KEY (word_id, tag_id)
 )
 ```
+
 #### Translation service:
-	- Web server written in Go
-	- Is basically a wrapper around [DeepL API](https://www.deepl.com/docs-api) which is used for fetching translations
+- Web server written in Go
+- Is basically a wrapper around [DeepL API](https://www.deepl.com/docs-api) which is used for fetching translations
