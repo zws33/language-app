@@ -1,5 +1,5 @@
 import './App.css'
-import TranslateForm from './Translate'
+import TranslateForm from './translate/Translate'
 
 function App() {
 

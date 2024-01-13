@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-let Prisma = new PrismaClient()
+const Prisma = new PrismaClient()
 
 export async function testDbConnection() {
     try {
