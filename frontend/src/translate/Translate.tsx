@@ -38,7 +38,6 @@ const TranslateForm: React.FC = () => {
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-
             let result = await getTranslation(inputValue);
             let text = (result as TranslationResponse).translations[0].text
             setResultText(text)
