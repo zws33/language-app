@@ -31,7 +31,8 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create an encoder and encode the JSON data directly into the buffer
+	log.Printf("Translation requested. Text: %s Target language: %s", translationRequest.Text, translationRequest.TargetLanguage)
+
 	request, err := buildDeepLRequest(translationRequest.Text, translationRequest.TargetLanguage)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -41,6 +42,7 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 	response, err := http.DefaultClient.Do(request)
 
 	if err != nil {
+		log.Printf("Error fetching translation. \n Error: %s", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

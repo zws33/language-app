@@ -2,9 +2,11 @@ import express, { Request, Response, NextFunction, Express } from "express";
 import TranslationRouter from "./controllers/translationController";
 import { testDbConnection } from "./db/prismaClient";
 import cors, { CorsOptions} from "cors";
+import morgan from "morgan";
 
 const app: Express = express();
 app.use(express.json());
+app.use(morgan("dev"));
 
 const devCorsOptions: CorsOptions = {
   origin: '*',
