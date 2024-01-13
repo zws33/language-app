@@ -14,9 +14,6 @@ type TranslationError = {
 }
 
 async function getTranslation(inputValue: string): Promise<TranslationResponse | TranslationError> {
-    console.log(`prod: ${import.meta.env.VITE_API_URL_PROD}`)
-    console.log(`dev ${import.meta.env.VITE_API_URL_DEV}`)
-    console.log(`env ${import.meta.env.MODE} `)
     let translateUrl = `${import.meta.env.VITE_API_URL}${inputValue}`
     let response = await fetch(translateUrl, {
         method: 'POST',

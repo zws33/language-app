@@ -9,6 +9,13 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:alpine
+FROM nginx:alpine as prod
 
 COPY --from=builder /app/dist /usr/share/nginx/html
+
+FROM node as dev
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD [ "npm","run","dev" ]
