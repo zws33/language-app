@@ -31,7 +31,12 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Translation requested. Text: %s Target language: %s", translationRequest.Text, translationRequest.TargetLanguage)
+	log.Printf(
+		`Translation requested.
+		Text: %s
+		Target language: %s`,
+		translationRequest.Text,
+		translationRequest.TargetLanguage)
 
 	request, err := buildDeepLRequest(translationRequest.Text, translationRequest.TargetLanguage)
 	if err != nil {
