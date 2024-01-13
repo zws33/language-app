@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import { fetchTranslation } from "./fetchTranslation";
-import { CorsOptions } from "cors";
 
 const TranslationRouter = Router();
 
