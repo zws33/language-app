@@ -15,3 +15,5 @@ COPY --from=build /app/package*.json ./
 COPY --from=build /app/build ./build
 
 EXPOSE 3001
+
+CMD [ "npm", "run", "start" ]
