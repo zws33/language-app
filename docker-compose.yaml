@@ -3,13 +3,12 @@ services:
   frontend:
     build:
       context: ./frontend
+      target: prod
     ports:
-      - "3000:3000"
+      - "3000:80"
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    env_file:
-      - ./frontend/.env
     depends_on:
       - backend
 
