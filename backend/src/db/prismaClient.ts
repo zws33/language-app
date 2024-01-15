@@ -1,17 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-const Prisma = new PrismaClient()
+export const db = new PrismaClient();
 
 export async function testDbConnection() {
     try {
-        let language = await Prisma.language.findFirst();
+        let language = await db.language.findFirst();
         if (language) {
             console.log("Db connection successful");
         } else {
-            console.log(`Error connecting to db`)
+            console.log(`Error connecting to db`);
         }
     } catch (e) {
-        console.log(`Error connecting to db \n Error: ${e}`)
+        console.log(`Error connecting to db \n Error: ${e}`);
     }
 }
-
-export default Prisma
