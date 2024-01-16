@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction, Express } from "express";
 import { TranslationRouter } from "./v1/routes/translationRouter";
-import { testDbConnection } from "./db/prismaClient";
 import cors, { CorsOptions } from "cors";
 import morgan from "morgan";
 import { WordRouter } from "./v1/routes/wordRouter";
@@ -38,5 +37,3 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
-
-testDbConnection();

@@ -8,8 +8,6 @@ const controller = LanguageController();
 
 LanguageRouter.get("/", controller.getLanguages);
 
-LanguageRouter.get("/:translationId", controller.getLanguage);
-
 LanguageRouter.post("/", controller.addLanguage);
 
 LanguageRouter.put("/:translationId", controller.updateLanguage);
