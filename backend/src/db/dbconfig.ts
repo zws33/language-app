@@ -1,15 +1,15 @@
 import { Pool } from 'pg';
+import * as fs from 'fs';
 
-
-const DB_PORT = process.env.DB_PORT;
 export const pool = new Pool({
     max: 20,
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
-    port: DB_PORT,
+    port: process.env.DB_PORT,
     database: process.env.DATABASE,
     ssl: {
-        rejectUnauthorized: false,
+        rejectUnauthorized: process.env.NODE_ENV == 'production',
+        ca: fs.readFileSync(process.env.CA_CERT).toString()
     }
 });

@@ -15,8 +15,8 @@ const prodCorsOptions: CorsOptions = {
   credentials: true,
 };
 
-let corsOptions = process.env.NODE_ENV == 'development' ? devCorsOptions : prodCorsOptions;
-console.log(process.env.NODE_ENV);
+const NODE_ENV = process.env.NODE_ENV;
+const corsOptions = NODE_ENV == 'development' ? devCorsOptions : prodCorsOptions;
 const app: Express = App(corsOptions);
 const port = process.env.PORT;
 app.listen(port, () => {

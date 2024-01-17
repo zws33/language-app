@@ -1,4 +1,3 @@
-import { Kysely, PostgresDialect } from "kysely";
 import { pool } from "./dbconfig";
 export async function testDb() {
     try {
