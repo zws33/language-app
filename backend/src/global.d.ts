@@ -10,6 +10,7 @@ declare global {
             DATABASE: string;
             SSLMODE: string;
             TRANSLATION_SERVICE_URL: string;
+            CA_CERT: string | undefined;
         }
     }
 }
