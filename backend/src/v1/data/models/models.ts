@@ -11,6 +11,5 @@ export type Word = {
 };
 
 export type Language = {
-    id: string,
-    displayText: string;
+    languageCode: string;
 };
