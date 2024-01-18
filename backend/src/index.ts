@@ -1,6 +1,6 @@
 import { Express } from "express";
 import { CorsOptions } from "cors";
-import { testDb as testDbConnection } from "./db/database";
+import { testDbConnection as testDbConnection } from "./db/database";
 import { App } from "./app";
 
 const devCorsOptions: CorsOptions = {
