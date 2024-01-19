@@ -1,17 +1,17 @@
 import { Router } from "express";
 
-import { WordController } from "../controllers/wordController";
+import { ProvideWordController, WordController } from "../controllers/wordController";
 
 export const WordRouter = Router();
 
-const controller = WordController();
+const controller: WordController = ProvideWordController();
 
 WordRouter.get("/", controller.getWords);
 
-WordRouter.get("/:translationId", controller.getWord);
+WordRouter.get("/:id", controller.getWord);
 
 WordRouter.post("/", controller.addWord);
 
-WordRouter.put("/:translationId", controller.updateWord);
+WordRouter.put("/:id", controller.updateWord);
 
-WordRouter.delete(":translationId", controller.deleteWord);
+WordRouter.delete("/:id", controller.deleteWord);
