@@ -11,7 +11,7 @@
 The app uses docker for building and deployment. To run the app locally:
 - clone the repo
 - Install [Docker](https://docs.docker.com/get-docker/) 
-- Run the following command: `docker-compose -f docker-compose.yaml up frontend --build -d`
+- Run the following command: `docker-compose -f docker-compose.yaml up -d`
 - Open `localhost:3000/` in the browser to test the UI
 - The API can be tested at `localhost:3001/`
 
@@ -65,40 +65,9 @@ graph TD
 #### Vocab API
 - Domain: `zwsmith.me/api/`
 - Typescript/Node app using Express
-- Store words and their translations
+- Stores words in different languages
+- Stores translations which relates two words of different langauges
 - Keeps track of tags set by users and their associated word
-- Data:
-
-```sql
-CREATE TABLE Word (
-    word_id SERIAL PRIMARY KEY,
-    word_text VARCHAR(100) NOT NULL,
-    word_text VARCHAR(100) NOT NULL,
-    language_id INT REFERENCES Languages(language_id),
-);
-
-CREATE TABLE Language (
-    language_id SERIAL PRIMARY KEY,
-    language_code VARCHAR(3) NOT NULL
-);
-
-CREATE TABLE Translation (
-    translation_id SERIAL PRIMARY KEY,
-	first_word_id INT REFERENCES Word(word_id),
-	second_word_id INT REFERENCES Word(word_id)
-)
-
-CREATE TABLE Tag (
-    tag_id SERIAL PRIMARY KEY,
-    tag_text VARCHAR(500)
-)
-
-CREATE TABLE Word_Tag (
-    word_id INT REFERENCES Word(word_id),
-    tag_id INT REFERENCES Tag(tag_id),
-    PRIMARY KEY (word_id, tag_id)
-)
-```
 
 #### Translation service:
 - Web server written in Go
