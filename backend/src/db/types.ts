@@ -2,6 +2,7 @@ import {
     Generated,
     Insertable,
     Selectable,
+    Updateable,
 } from 'kysely';
 
 export interface Database {
@@ -19,6 +20,7 @@ export interface LanguageTable {
 }
 
 export type Word = Selectable<WordTable>;
-export type NewWord = Insertable<WordTable>;
+export type WordInsert = Insertable<WordTable>;
+export type WordUpdate = Updateable<WordTable>;
 
 export type Language = Selectable<LanguageTable>;

@@ -25,9 +25,16 @@ class WordControllerImpl implements WordController {
         res.json(words);
     };
     getWord = async (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
-        let word = await this.repository.getWord(id);
-        res.json(word);
+        try {
+            const id = parseInt(req.params.id);
+            if (!id) {
+                res.status(400).send("Error: Bad Request");
+            }
+            let word = await this.repository.getWord(id);
+            res.json(word);
+        } catch (error) {
+            res.status(500).send("Error getting word");
+        }
     };
     addWord = async (req: Request, res: Response) => {
         const { body } = req;
@@ -42,16 +49,45 @@ class WordControllerImpl implements WordController {
             let result = await this.repository.insertWord(insertData);
             res.status(200).json({
                 message: "Insert succeeded",
-                word: result
+                result: result
             });
         } catch (error) {
             res.status(500).send("Error adding word to db.");
         }
     };
     updateWord = async (req: Request, res: Response) => {
-        throw Error("not implemented");
+        const { body, params } = req;
+        if (!params.id || !body.text || !body.languageCode) {
+            res.status(400).send("Error: Bad Request");
+        }
+        try {
+            const updateData = {
+                id: parseInt(params.id),
+                text: body.text,
+                languageCode: body.languageCode
+            };
+            let result = await this.repository.updateWord(updateData);
+            res.status(200).json({
+                message: "Update succeeded",
+                result: result
+            });
+        } catch (error) {
+            res.status(500).send("Error adding word to db.");
+        }
     };
     deleteWord = async (req: Request, res: Response) => {
-        throw Error("not implemented");
+        const id = parseInt(req.params.id);
+        if (!id) {
+            res.status(400).send("Error: Bad Request");
+        }
+        try {
+            let result = await this.repository.deleteWord(id);
+            res.status(200).json({
+                message: "Update succeeded",
+                result: result
+            });
+        } catch (error) {
+            res.status(500).send("Error adding word to db.");
+        }
     };
 };

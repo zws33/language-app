@@ -7,7 +7,7 @@ export type Translation = {
 export type Word = {
     id: number;
     text: string,
-    language: Language;
+    languageCode: string;
 };
 
 export type Language = {

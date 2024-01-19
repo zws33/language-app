@@ -1,12 +1,12 @@
 import { Word } from "../models/models";
 import { db } from "../../../db/database";
-import { InsertResult } from "kysely";
+import { DeleteResult, InsertResult } from "kysely";
 export interface WordRepository {
     getWords(languageCode?: string): Promise<Word[]>;
     getWord(id: number): Promise<Word>;
-    insertWord(data: InsertWordData): Promise<{ id: number; }>;
-    updateWord(word: Word): Promise<void>;
-    deleteWord(id: number): Promise<void>;
+    insertWord(data: WordInsert): Promise<{ insertedRows: string; }>;
+    updateWord(data: WordUpdate): Promise<{ updatedRows: string; }>;
+    deleteWord(id: number): Promise<{ deletedRowsCount: string; }>;
 };
 
 const WordRepositoryImpl: WordRepository = {
@@ -20,7 +20,7 @@ const WordRepositoryImpl: WordRepository = {
             return {
                 id: entity.word_id,
                 text: entity.word_text,
-                language: { code: entity.language_code }
+                languageCode: entity.language_code
             };
         });
     },
@@ -33,22 +33,34 @@ const WordRepositoryImpl: WordRepository = {
         return {
             id: data?.word_id,
             text: data?.word_text,
-            language: { code: data?.language_code }
+            languageCode: data?.language_code
         };
     },
-    insertWord: async (data: InsertWordData): Promise<{ id: number; }> => {
+    insertWord: async (data: WordInsert): Promise<{ insertedRows: string; }> => {
         let query = db.insertInto("word").values({
             word_text: data.text,
             language_code: data.languageCode
         });
-        let result = await query.returning("word_id").executeTakeFirstOrThrow();
-        return { id: result.word_id };
+        let result: InsertResult = await query.executeTakeFirstOrThrow();
+        return { insertedRows: result.numInsertedOrUpdatedRows?.toString() ?? "0" };
     },
-    updateWord: async (word: Word): Promise<void> => {
-        throw new Error("Function not implemented.");
+    updateWord: async (data: WordUpdate): Promise<{ updatedRows: string; }> => {
+        let query = db.updateTable("word")
+            .set({
+                word_text: data.text,
+                language_code: data.languageCode
+            })
+            .where('word_id', '=', data.id);
+        db.updateTable;
+        let result = await query.executeTakeFirstOrThrow();
+        return { updatedRows: result.numUpdatedRows.toString() };
     },
-    deleteWord: async (id: number): Promise<void> => {
-        throw new Error("Function not implemented.");
+    deleteWord: async (id: number): Promise<{ deletedRowsCount: string; }> => {
+        let query = db.deleteFrom("word").where("word.word_id", "=", id);
+        let result: DeleteResult = await query.executeTakeFirstOrThrow();
+        return {
+            deletedRowsCount: result.numDeletedRows.toString()
+        };
     }
 };
 
@@ -56,7 +68,13 @@ export function ProvideWordRepository(): WordRepository {
     return WordRepositoryImpl;
 };
 
-export type InsertWordData = {
+export type WordInsert = {
+    text: string,
+    languageCode: string;
+};
+
+export type WordUpdate = {
+    id: number,
     text: string,
     languageCode: string;
 };
