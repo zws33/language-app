@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import { ProvideWordController, WordController } from "../controllers/wordController";
+import { WordController } from "../controllers/wordController";
 
 export const WordRouter = Router();
 
-const controller: WordController = ProvideWordController();
+const controller: WordController = new WordController();
 
 WordRouter.get("/", controller.getWords);
 

@@ -4,13 +4,8 @@ import * as fs from 'fs';
 const caPath = process.env.CA_CERT ? fs.readFileSync(process.env.CA_CERT).toString() : undefined;
 export const pool = new Pool({
     max: 20,
-    host: process.env.HOST,
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    port: process.env.DB_PORT,
-    database: process.env.DATABASE,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: process.env.NODE_ENV == 'production',
-        ca: caPath
+        rejectUnauthorized: false,
     }
 });
