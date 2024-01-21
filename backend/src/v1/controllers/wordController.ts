@@ -3,7 +3,7 @@ import * as repository from '../data/repositories/wordRepository'
 
 export class WordController {
     getWords = async (req: Request, res: Response) => {
-        let words = await repository.getWords();
+        const words = await repository.getWords();
         res.json(words);
     };
 
@@ -13,7 +13,7 @@ export class WordController {
             if (!id) {
                 res.status(400).send("Error: Bad Request");
             }
-            let word = await repository.getWord(id);
+            const word = await repository.getWord(id);
             res.json(word);
         } catch (error) {
             res.status(500).send("Error getting word");
@@ -30,7 +30,7 @@ export class WordController {
                 text: body.text,
                 languageCode: body.languageCode
             };
-            let result = await repository.insertWord(insertData);
+            const result = await repository.insertWord(insertData);
             res.status(200).json({
                 message: "Insert succeeded",
                 result: result
@@ -51,7 +51,7 @@ export class WordController {
                 text: body.text,
                 languageCode: body.languageCode
             };
-            let result = await repository.updateWord(updateData);
+            const result = await repository.updateWord(updateData);
             res.status(200).json({
                 message: "Update succeeded",
                 result: result
@@ -67,7 +67,7 @@ export class WordController {
             res.status(400).send("Error: Bad Request");
         }
         try {
-            let result = await repository.deleteWord(id);
+            const result = await repository.deleteWord(id);
             res.status(200).json({
                 message: "Update succeeded",
                 result: result
@@ -76,4 +76,4 @@ export class WordController {
             res.status(500).send("Error adding word to db.");
         }
     };
-};
+}
