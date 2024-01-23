@@ -5,7 +5,6 @@
   "keywords": [],
   "license": "MIT",
   "author": "",
-
   "main": "index.js",
   "scripts": {
     "build": "tsc",

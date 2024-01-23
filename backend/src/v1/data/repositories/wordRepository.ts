@@ -1,5 +1,6 @@
-import { DeleteResult, InsertResult, UpdateResult } from 'kysely';
 import { db } from '../../../db/database.js';
+import { checkError } from '../../../utils/checkError.js';
+import { BaseError } from '../../../utils/BaseError.js';
 
 type InsertData = {
   text: string;
@@ -9,68 +10,108 @@ type InsertData = {
 type UpdateData = {
   id: number;
   text: string;
-  languageCode: string;
+  language_code: string;
 };
 
-async function getWords(languageCode?: string) {
+async function getWords(language_code?: string) {
   const query = db
     .selectFrom('word')
     .selectAll()
-    .$if(languageCode !== undefined, (builder) => {
-      return builder.where('word.language_code', '=', languageCode!);
+    .$if(language_code !== undefined, (builder) => {
+      return builder.where('word.language_code', '=', language_code!);
     });
 
   try {
-    return await query.execute();
-  } catch (error) {
-    if (typeof error === 'string') {
-      throw new Error(error);
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-    return [];
+    const result = await query.execute();
+    return { success: true, result };
+  } catch (e) {
+    const error = checkError(e);
+    return { success: false, error };
   }
 }
 
 async function getWord(id: number) {
-  const data = await db.selectFrom('word').selectAll().where('word.word_id', '=', id).executeTakeFirst();
-  if (!data) {
-    throw new Error(`Word with id ${id} not found`);
+  try {
+    const result = await db.selectFrom('word').selectAll().where('word.word_id', '=', id).executeTakeFirst();
+    if (result === undefined) {
+      const error = new BaseError('Could not find word: ' + id);
+      return { success: false, error };
+    } else {
+      return { success: true, result };
+    }
+  } catch (e) {
+    const error = checkError(e);
+    return { success: false, error };
   }
-  return data;
 }
 
 async function insertWord(data: InsertData) {
-  const query = db
-    .insertInto('word')
-    .values({
-      word_text: data.text,
-      language_code: data.language_code,
-    })
-    .returning(['word_id', 'word_text', 'language_code']);
-  const result = await query.executeTakeFirstOrThrow();
-  return { insertedRow: result };
+  try {
+    const result = await db
+      .insertInto('word')
+      .values({
+        word_text: data.text,
+        language_code: data.language_code,
+      })
+      .returning(['word_id', 'word_text', 'language_code'])
+      .executeTakeFirst();
+    if (result === undefined) {
+      const error = new BaseError('Could not insert word.');
+      return { success: false, error };
+    } else {
+      return {
+        success: true,
+        result: {
+          insertedRows: result,
+        },
+      };
+    }
+  } catch (e) {
+    const error = checkError(e);
+    return { success: false, error };
+  }
 }
 
 async function updateWord(data: UpdateData) {
-  const query = db
-    .updateTable('word')
-    .set({
-      word_text: data.text,
-      language_code: data.languageCode,
-    })
-    .where('word_id', '=', data.id)
-    .returning(['word_id', 'word_text', 'language_code']);
-  const result = await query.executeTakeFirstOrThrow();
-  return { updated_rows: result };
+  try {
+    const result = await db
+      .updateTable('word')
+      .set({
+        word_text: data.text,
+        language_code: data.language_code,
+      })
+      .where('word_id', '=', data.id)
+      .returning(['word_id', 'word_text', 'language_code'])
+      .executeTakeFirst();
+    return {
+      success: true,
+      result: {
+        updatedRows: result,
+      },
+    };
+  } catch (e) {
+    const error = checkError(e);
+    return { success: false, error };
+  }
 }
 
 async function deleteWord(id: number) {
-  const query = db.deleteFrom('word').where('word.word_id', '=', id).returning(['word_id']);
-  const result = await query.executeTakeFirstOrThrow();
-  return {
-    delete_word_id: result,
-  };
+  try {
+    const result = await db
+      .deleteFrom('word')
+      .where('word.word_id', '=', id)
+      .returning(['word_id'])
+      .executeTakeFirstOrThrow();
+    return {
+      success: true,
+      result: {
+        deletedRows: result,
+      },
+    };
+  } catch (e) {
+    const error = checkError(e);
+    return { success: false, error };
+  }
 }
 
 export { getWords, getWord, insertWord, updateWord, deleteWord };

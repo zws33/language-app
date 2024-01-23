@@ -1,15 +1,23 @@
-import { InsertResult } from "kysely";
-import { db } from "../../../db/database";
+import { db } from '../../../db/database';
 
-type Language = {
-    language_code: string;
-}
-type GetLanguage = (languageCode: string) => Promise<Language[]>;
-type InsertLanguage = (languageCode: string) => Promise<InsertResult[]>;
-export const getLanguage: GetLanguage = async (languageCode) => {
-    return await db.selectFrom('language').selectAll().execute();
+export async function getLanguage() {
+  try {
+    const result = await db.selectFrom('language').selectAll().execute();
+    return { success: true, result };
+  } catch (e) {
+    return { success: false, error: e };
+  }
 }
 
-export const insertLanguage: InsertLanguage = async (languageCode) => {
-    return await db.insertInto('language').values({ language_code: languageCode }).execute();
+export async function insertLanguage(languageCode: string) {
+  try {
+    const result = await db
+      .insertInto('language')
+      .values({ language_code: languageCode })
+      .returning('language.language_code')
+      .execute();
+    return { success: true, result };
+  } catch (e) {
+    return { success: false, error: e };
+  }
 }
