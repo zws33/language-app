@@ -1,3 +1,4 @@
+import { DeleteResult, InsertResult, UpdateResult } from 'kysely';
 import { db } from '../../../db/database.js';
 
 type InsertData = {
