@@ -1,18 +1,13 @@
 declare global {
-    namespace NodeJS {
-        interface ProcessEnv {
-            NODE_ENV: 'development' | 'production';
-            PORT: number;
-            USER: string;
-            PASSWORD: string;
-            HOST: string;
-            DB_PORT: number;
-            DATABASE: string;
-            SSLMODE: string;
-            TRANSLATION_SERVICE_URL: string;
-            CA_CERT: string | undefined;
-        }
-    }
+	namespace NodeJS {
+		interface ProcessEnv {
+			NODE_ENV: 'development' | 'production';
+			DATABASE_URL: string;
+			PORT: number;
+			TRANSLATION_SERVICE_URL: string;
+			CA_CERT: string | undefined;
+		}
+	}
 }
 
-export { };
+export {};

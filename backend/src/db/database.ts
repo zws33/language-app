@@ -1,17 +1,24 @@
-import { Kysely, PostgresDialect } from "kysely";
-import { pool } from "./dbconfig";
-import { Database } from "./types";
-export async function testDbConnection() {
-    const res = await pool.query('SELECT NOW()');
-    if (res) {
-        console.log("DB connection succeeded.");
-    } else {
-        throw Error("DB connection failed.");
-    }
-}
+import { Kysely, PostgresDialect } from 'kysely';
+import { DB } from 'kysely-codegen';
+import pool from './dbconfig.js';
 
-const dialect = new PostgresDialect({ pool: pool });
+export const testDbConnection = () => {
+	pool
+		.query('SELECT NOW()')
+		.then((res) => {
+			if (res.rows.length > 0) {
+				console.log('DB connection succeeded.');
+			} else {
+				throw Error('DB connection failed.');
+			}
+		})
+		.catch((err) => {
+			console.error(err);
+		});
+};
 
-export const db = new Kysely<Database>({
-    dialect,
+const dialect = new PostgresDialect({ pool });
+
+export const db = new Kysely<DB>({
+	dialect,
 });
