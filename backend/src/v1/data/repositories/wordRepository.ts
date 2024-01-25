@@ -1,14 +1,8 @@
 import { db } from '../../../db/database.js';
 
-type Word = {
-  language_code: string;
-  word_id: number;
-  word_text: string;
-};
-
 type InsertData = {
   text: string;
-  languageCode: string;
+  language_code: string;
 };
 
 type UpdateData = {
@@ -17,21 +11,16 @@ type UpdateData = {
   languageCode: string;
 };
 
-type GetWords = (languageCode?: string) => Promise<Word[]>;
-type GetWord = (id: number) => Promise<Word>;
-type InsertWord = (data: InsertData) => Promise<{ insertedRows: string }>;
-type UpdateWord = (data: UpdateData) => Promise<{ updatedRows: string }>;
-type DeleteWord = (id: number) => Promise<{ deletedRowsCount: string }>;
-
-export const getWords: GetWords = async (languageCode) => {
+async function getWords(languageCode?: string) {
   const query = db
     .selectFrom('word')
     .selectAll()
-    .$if(languageCode !== undefined, (builder) => builder.where('word.language_code', '=', languageCode!));
+    .$if(languageCode !== undefined, (builder) => {
+      return builder.where('word.language_code', '=', languageCode!);
+    });
 
   try {
-    const result: Word[] = await query.execute();
-    return result;
+    return await query.execute();
   } catch (error) {
     if (typeof error === 'string') {
       throw new Error(error);
@@ -40,41 +29,47 @@ export const getWords: GetWords = async (languageCode) => {
     }
     return [];
   }
-};
+}
 
-export const getWord: GetWord = async (id) => {
+async function getWord(id: number) {
   const data = await db.selectFrom('word').selectAll().where('word.word_id', '=', id).executeTakeFirst();
   if (!data) {
     throw new Error(`Word with id ${id} not found`);
   }
   return data;
-};
+}
 
-export const insertWord: InsertWord = async (data: InsertData): Promise<{ insertedRows: string }> => {
-  const query = db.insertInto('word').values({
-    word_text: data.text,
-    language_code: data.languageCode,
-  });
+async function insertWord(data: InsertData) {
+  const query = db
+    .insertInto('word')
+    .values({
+      word_text: data.text,
+      language_code: data.language_code,
+    })
+    .returning(['word_id', 'word_text', 'language_code']);
   const result = await query.executeTakeFirstOrThrow();
-  return { insertedRows: result.numInsertedOrUpdatedRows?.toString() ?? '0' };
-};
+  return { insertedRow: result };
+}
 
-export const updateWord: UpdateWord = async (data) => {
+async function updateWord(data: UpdateData) {
   const query = db
     .updateTable('word')
     .set({
       word_text: data.text,
       language_code: data.languageCode,
     })
-    .where('word_id', '=', data.id);
+    .where('word_id', '=', data.id)
+    .returning(['word_id', 'word_text', 'language_code']);
   const result = await query.executeTakeFirstOrThrow();
-  return { updatedRows: result.numUpdatedRows.toString() };
-};
+  return { updated_rows: result };
+}
 
-export const deleteWord: DeleteWord = async (id: number) => {
-  const query = db.deleteFrom('word').where('word.word_id', '=', id);
+async function deleteWord(id: number) {
+  const query = db.deleteFrom('word').where('word.word_id', '=', id).returning(['word_id']);
   const result = await query.executeTakeFirstOrThrow();
   return {
-    deletedRowsCount: result.numDeletedRows.toString(),
+    delete_word_id: result,
   };
-};
+}
+
+export { getWords, getWord, insertWord, updateWord, deleteWord };
