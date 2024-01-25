@@ -27,9 +27,7 @@ export const getWords: GetWords = async (languageCode) => {
   const query = db
     .selectFrom('word')
     .selectAll()
-    .$if(languageCode !== undefined, (builder) =>
-      builder.where('word.language_code', '=', languageCode!),
-    );
+    .$if(languageCode !== undefined, (builder) => builder.where('word.language_code', '=', languageCode!));
 
   try {
     const result: Word[] = await query.execute();
@@ -45,20 +43,14 @@ export const getWords: GetWords = async (languageCode) => {
 };
 
 export const getWord: GetWord = async (id) => {
-  const data = await db
-    .selectFrom('word')
-    .selectAll()
-    .where('word.word_id', '=', id)
-    .executeTakeFirst();
+  const data = await db.selectFrom('word').selectAll().where('word.word_id', '=', id).executeTakeFirst();
   if (!data) {
     throw new Error(`Word with id ${id} not found`);
   }
   return data;
 };
 
-export const insertWord: InsertWord = async (
-  data: InsertData,
-): Promise<{ insertedRows: string }> => {
+export const insertWord: InsertWord = async (data: InsertData): Promise<{ insertedRows: string }> => {
   const query = db.insertInto('word').values({
     word_text: data.text,
     language_code: data.languageCode,

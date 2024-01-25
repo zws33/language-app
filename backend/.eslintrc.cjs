@@ -33,10 +33,7 @@ module.exports = {
         allowModules: ['kysely-codegen'],
       },
     ],
-    'import/no-extraneous-dependencies': [
-      'error',
-      { includeInternal: true, includeTypes: true },
-    ],
+    'import/no-extraneous-dependencies': ['error', { includeInternal: true, includeTypes: true }],
   },
   ignorePatterns: ['.eslintrc.*'],
   settings: {
