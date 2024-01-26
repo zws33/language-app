@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as repository from '../data/repositories/languageRepository.js'; // Import the missing repository module
+import * as repository from '../data/repositories/languageRepository.js';
 
 const languageRouter = Router();
 

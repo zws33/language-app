@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import * as repository from '../data/repositories/wordRepository.js';
-
 const wordRouter = Router();
 
 wordRouter.get('/', async (req, res) => {

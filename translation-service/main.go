@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -8,8 +9,8 @@ import (
 )
 
 func main() {
-	// Register a handler for the "/hello" path with a URL parameter ":name"
 	server := server.DeepLServer()
-	log.Println("Starting the server on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", server))
+	port := 80
+	log.Printf("Starting the server on port %d...\n", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), server))
 }
