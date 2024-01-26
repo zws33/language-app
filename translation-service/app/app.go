@@ -1,4 +1,4 @@
-package server
+package app
 
 import (
 	"bytes"
@@ -33,10 +33,13 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf(
 		`Translation requested.
-		Text: %s
+		Text: %s,
+		Text: %s,
 		Target language: %s`,
 		translationRequest.Text,
-		translationRequest.TargetLanguage)
+		translationRequest.TargetLanguage, 
+		translationRequest.SourceLanguage,
+	)
 
 	request, err := buildDeepLRequest(translationRequest.Text, translationRequest.TargetLanguage)
 	if err != nil {
@@ -90,4 +93,5 @@ func getTranslationRequestData(r *http.Request) (TranslationRequest, error) {
 type TranslationRequest struct {
 	Text           string `json:"text"`
 	TargetLanguage string `json:"target_lang"`
+	SourceLanguage string `json:"source_lang"`
 }

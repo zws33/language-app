@@ -3,7 +3,7 @@ import { Result } from '../../../utils/Result';
 
 export async function getTranslation(
   text: string,
-  source_lang: string,
+  sourceLang: string,
   targetLanguage: string,
 ): Promise<Result<{ translatedText: string }>> {
   try {
