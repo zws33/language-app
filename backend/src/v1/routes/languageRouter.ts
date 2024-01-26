@@ -4,8 +4,7 @@ import * as repository from '../data/repositories/languageRepository.js'; // Imp
 const languageRouter = Router();
 
 languageRouter.get('/', async (req, res) => {
-  const languageCode = req.query.language_code as string;
-  const result = await repository.getLanguage(languageCode);
+  const result = await repository.getLanguages();
   res.json(result);
 });
 

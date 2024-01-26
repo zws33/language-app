@@ -1,6 +1,6 @@
 import { db } from '../../../db/database';
 
-export async function getLanguage() {
+export async function getLanguages() {
   try {
     const result = await db.selectFrom('language').selectAll().execute();
     return { success: true, result };

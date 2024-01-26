@@ -5,7 +5,7 @@ export function checkError(value: unknown): Error {
   try {
     stringified = JSON.stringify(value);
   } catch {
-    stringified = '[Unable to stringify the thrown value]';
+    stringified = 'Unable to stringify the thrown value';
   }
 
   const error = new Error(`This value was thrown as is, not through an Error: ${stringified}`);
