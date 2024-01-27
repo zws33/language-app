@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -58,6 +59,19 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 
 	responseBody, _ := io.ReadAll(response.Body)
 	w.Write(responseBody)
+}
+
+func buildDictionaryRequest(text string, targetLanguage string) (*http.Request, error) {
+	url := os.Getenv("DICTIONARY_API_URL")
+	apiKey := os.Getenv("DICTIONARY_API_KEY")
+	fullUrl := fmt.Sprintf("%s%s?key=%s", url, text, apiKey)
+	fmt.Println(fullUrl)
+	request, err := http.NewRequest("GET", fullUrl, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return request, err
 }
 
 func buildDeepLRequest(text string, targetLanguage string) (*http.Request, error) {
