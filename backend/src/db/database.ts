@@ -1,5 +1,5 @@
-import { Kysely, PostgresDialect } from 'kysely';
-import { DB } from 'kysely-codegen';
+import { Kysely, PostgresDialect, Selectable } from 'kysely';
+import { DB, Word as dbWord } from 'kysely-codegen';
 import pool from './dbconfig.js';
 
 export async function testDbConnection(): Promise<'success' | 'failure'> {
@@ -12,3 +12,5 @@ const dialect = new PostgresDialect({ pool });
 export const db = new Kysely<DB>({
   dialect,
 });
+
+export type Word = Selectable<dbWord>;

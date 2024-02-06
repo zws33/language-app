@@ -1,17 +1,6 @@
-import { db } from '../../../db/database.js';
+import { Word, db } from '../../../db/database.js';
 import { checkError } from '../../../utils/checkError.js';
 import { BaseError } from '../../../utils/BaseError.js';
-
-type InsertData = {
-  text: string;
-  language_code: string;
-};
-
-type UpdateData = {
-  id: number;
-  text: string;
-  language_code: string;
-};
 
 async function getWords(language_code?: string) {
   const query = db
@@ -45,12 +34,12 @@ async function getWord(id: number) {
   }
 }
 
-async function insertWord(data: InsertData) {
+async function insertWord(data: Word) {
   try {
     const result = await db
       .insertInto('word')
       .values({
-        word_text: data.text,
+        word_text: data.word_text,
         language_code: data.language_code,
       })
       .returning(['word_id', 'word_text', 'language_code'])
@@ -72,15 +61,15 @@ async function insertWord(data: InsertData) {
   }
 }
 
-async function updateWord(data: UpdateData) {
+async function updateWord(data: Word) {
   try {
     const result = await db
       .updateTable('word')
       .set({
-        word_text: data.text,
+        word_text: data.word_text,
         language_code: data.language_code,
       })
-      .where('word_id', '=', data.id)
+      .where('word_id', '=', data.word_id)
       .returning(['word_id', 'word_text', 'language_code'])
       .executeTakeFirst();
     return {

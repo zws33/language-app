@@ -24,11 +24,11 @@ CREATE TABLE translation (
     first_word_id integer NOT NULL REFERENCES word(word_id),
     second_word_id integer NOT NULL REFERENCES word(word_id)
 );
-INSERT INTO Language (language_code) VALUES
+INSERT INTO language (language_code) VALUES
 ('ES'),
 ('EN');
 
-INSERT INTO Word (word_text, language_code) VALUES 
+INSERT INTO word (word_text, language_code) VALUES 
 ('time', 'EN'),
 ('year', 'EN'),
 ('people', 'EN'),
@@ -130,7 +130,7 @@ INSERT INTO Word (word_text, language_code) VALUES
 ('force', 'EN'),
 ('education', 'EN');
 
-INSERT INTO Word(word_text, language_code) VALUES
+INSERT INTO word (word_text, language_code) VALUES
 ('tiempo', 'ES'),
 ('año', 'ES'),
 ('gente', 'ES'),
