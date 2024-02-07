@@ -1,4 +1,5 @@
-import { Word } from 'kysely-codegen';
+import { Selectable } from 'kysely';
+import { Word as dbWord } from 'kysely-codegen';
 
 export type TranslationRequest = {
   words: Word[];
@@ -8,3 +9,5 @@ export type TranslationRequest = {
 export type TranslationResult = {
   words: Word[];
 };
+
+export type Word = Selectable<dbWord>;

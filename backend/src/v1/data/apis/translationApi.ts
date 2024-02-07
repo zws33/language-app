@@ -1,6 +1,6 @@
 import { checkError } from '../../../utils/checkError';
 import { Result } from '../../../utils/Result';
-import { TranslationResult, TranslationRequest } from '../models/translationModels';
+import { TranslationResult, TranslationRequest } from '../models/models';
 
 export async function getTranslation(data: TranslationRequest): Promise<Result<TranslationResult>> {
   try {
@@ -21,9 +21,9 @@ export async function getTranslation(data: TranslationRequest): Promise<Result<T
       throw new Error('Failed to get translation');
     }
     const response: TranslationResult = await result.json();
-    return { success: true, result: response };
+    return { data: response };
   } catch (e) {
     const error = checkError(e);
-    return { success: false, error };
+    return { error };
   }
 }
