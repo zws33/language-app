@@ -2,7 +2,7 @@ import { Language, db } from '../../../db/database';
 import { Result } from '../../../utils/Result';
 import { checkError } from '../../../utils/checkError';
 
-export async function getLanguages(): Promise<Result<Language[]>> {
+export async function findLanguages(): Promise<Result<Language[]>> {
   try {
     const result = await db.selectFrom('language').selectAll().execute();
     return { data: result };
@@ -19,6 +19,15 @@ export async function insertLanguage(languageCode: string[]): Promise<Result<Lan
       .values(languageCode.map((code) => ({ language_code: code })))
       .returningAll()
       .execute();
+    return { data: result };
+  } catch (e) {
+    return { error: checkError(e) };
+  }
+}
+
+export async function deleteLanguage(languageCode: string): Promise<Result<Language[]>> {
+  try {
+    const result = await db.deleteFrom('language').where('language_code', '=', languageCode).returningAll().execute();
     return { data: result };
   } catch (e) {
     return { error: checkError(e) };

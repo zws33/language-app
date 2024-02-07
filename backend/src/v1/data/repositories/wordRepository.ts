@@ -81,4 +81,4 @@ async function deleteWord(id: number): Promise<Result<Word[]>> {
   }
 }
 
-export { getWords, getWord, insertWord, updateWord, deleteWord };
+export { getWords as findWords, getWord as findWord, insertWord, updateWord, deleteWord };
