@@ -36,7 +36,7 @@ async function getWord(id: number): Promise<Result<Word>> {
   }
 }
 
-async function insertWord(words: Word[]): Promise<Result<Word[]>> {
+async function insertWord(words: { word_text: string; language_code: string }[]): Promise<Result<Word[]>> {
   try {
     const result = await db.insertInto('word').values(words).returningAll().execute();
     if (result === undefined) {
