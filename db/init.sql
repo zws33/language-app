@@ -4,13 +4,13 @@ CREATE TABLE language (
 
 CREATE TABLE word (
     word_id SERIAL PRIMARY KEY,
-    word_text character varying(100) NOT NULL,
+    word_text character varying(100) NOT NULL UNIQUE,
     language_code character varying(3) NOT NULL REFERENCES language(language_code)
 );
 
 CREATE TABLE tag (
     tag_id SERIAL PRIMARY KEY,
-    tag_text character varying(500) NOT NULL
+    tag_text character varying(500) NOT NULL UNIQUE
 );
 
 CREATE TABLE word_tag (
