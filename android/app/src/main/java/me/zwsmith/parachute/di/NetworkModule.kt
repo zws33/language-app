@@ -6,23 +6,20 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
+import me.zwsmith.parachute.TodoService
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-
+@Module
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
-
-    private val networkJson: Json by lazy {
-        Json {
-            ignoreUnknownKeys = true
-        }
-    }
-
-    private val okHttp: OkHttpClient by lazy {
-        OkHttpClient.Builder()
+    @Provides
+    @Singleton
+    fun provideOkHttp(): OkHttpClient {
+        return OkHttpClient.Builder()
             .addInterceptor(
                 HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
             )
@@ -30,11 +27,18 @@ object NetworkModule {
     }
 
 
-    val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttp: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
             .client(okHttp)
             .baseUrl("https://jsonplaceholder.typicode.com/")
-            .addConverterFactory(networkJson.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .build()
+    }
+
+    @Provides
+    fun provideTodoService(retrofit: Retrofit): TodoService {
+        return retrofit.create(TodoService::class.java)
     }
 }

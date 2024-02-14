@@ -1,36 +1,35 @@
 package me.zwsmith.parachute
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dagger.hilt.android.AndroidEntryPoint
 import me.zwsmith.parachute.ui.theme.ParachuteTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    lateinit var service: TodoService
-    lateinit var repository: WordsRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        service = (application as ParachuteApplication).networkModule.retrofit.create()
-        repository = WordsRepository(Dispatchers.IO, service)
-        GlobalScope.launch {
-            repository.getAllWords().joinToString(", ").let { Log.d("TEST", it) }
-        }
         setContent {
             ParachuteTheme {
                 // A surface container using the 'background' color from the theme
@@ -38,7 +37,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    WordsList()
+                    val mainViewModel: MainViewModel = hiltViewModel()
+                    mainViewModel.getTodos()
+                    val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
+                    when (uiState) {
+                        is UiState.Data -> TodoList((uiState as UiState.Data).todos, {})
+                        UiState.Error -> {
+                            Box {
+                                Text("Error fetching todos")
+                            }
+                        }
+                        UiState.Loading -> {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
         }
@@ -46,16 +58,22 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WordsList() {
+fun TodoList(todos: List<Todo>, onCheckChanged: (Boolean) -> Unit) {
     Box(modifier = Modifier.padding(24.dp)) {
         Column {
-            Button(onClick = {
-
-            }) {
-                Text(text = "translate")
-            }
-            Column {
-
+            LazyColumn {
+                items(todos) {
+                    Box {
+                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(modifier = Modifier.padding(8.dp), text = it.title)
+                            Checkbox(
+                                modifier = Modifier.padding(8.dp),
+                                checked = it.completed,
+                                onCheckedChange = onCheckChanged
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -63,8 +81,13 @@ fun WordsList() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun TodoPreview() {
     ParachuteTheme {
-        WordsList()
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ){
+            TodoList(todos = emptyList(), onCheckChanged = {})
+        }
     }
 }
