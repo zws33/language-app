@@ -4,7 +4,7 @@ CREATE TABLE language (
 
 CREATE TABLE word (
     word_id SERIAL PRIMARY KEY,
-    word_text character varying(100) NOT NULL UNIQUE,
+    word_text character varying(100) NOT NULL,
     language_code character varying(3) NOT NULL REFERENCES language(language_code)
 );
 
@@ -21,12 +21,18 @@ CREATE TABLE word_tag (
 
 CREATE TABLE translation (
     translation_id SERIAL PRIMARY KEY,
-    first_word_id integer NOT NULL REFERENCES word(word_id),
-    second_word_id integer NOT NULL REFERENCES word(word_id)
+    word_id_1 integer NOT NULL REFERENCES word(word_id),
+    word_id_2 integer NOT NULL REFERENCES word(word_id)
 );
+
 INSERT INTO language (language_code) VALUES
+('EN'),
 ('ES'),
-('EN');
+('FR'),
+('IT'),
+('DE'),
+('PT')
+;
 
 INSERT INTO word (word_text, language_code) VALUES 
 ('time', 'EN'),
@@ -236,7 +242,7 @@ DO
 $$
 BEGIN
     FOR i IN 1..100 LOOP
-        INSERT INTO translation (first_word_id, second_word_id) VALUES (i, i + 100);
+        INSERT INTO translation (word_id_1, word_id_2) VALUES (i, i + 100);
     END LOOP;
 END;
 $$
