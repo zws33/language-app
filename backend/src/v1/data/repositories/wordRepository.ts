@@ -4,12 +4,15 @@ import { BaseError } from '../../../utils/BaseError.js';
 import { Word } from '../models/models.js';
 import { Result } from '../../../utils/Result.js';
 
-async function getWords(language_code?: string): Promise<Result<Word[]>> {
+async function findWords(language_code?: string, text?: string): Promise<Result<Word[]>> {
   const query = db
     .selectFrom('word')
     .selectAll()
     .$if(language_code !== undefined, (builder) => {
       return builder.where('word.language_code', '=', language_code!);
+    })
+    .$if(text !== undefined, (builder) => {
+      return builder.where('word.word_text', '=', text!);
     });
 
   try {
@@ -21,7 +24,7 @@ async function getWords(language_code?: string): Promise<Result<Word[]>> {
   }
 }
 
-async function getWord(id: number): Promise<Result<Word>> {
+async function findWordById(id: number): Promise<Result<Word>> {
   try {
     const result = await db.selectFrom('word').selectAll().where('word.word_id', '=', id).executeTakeFirst();
     if (result === undefined) {
@@ -81,4 +84,4 @@ async function deleteWord(id: number): Promise<Result<Word[]>> {
   }
 }
 
-export { getWords as findWords, getWord as findWord, insertWord, updateWord, deleteWord };
+export { findWords, findWordById, insertWord, updateWord, deleteWord };

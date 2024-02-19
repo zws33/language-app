@@ -6,8 +6,9 @@ import { isError } from '../../utils/Result.js';
 const wordRouter = Router();
 
 wordRouter.get('/', async (req, res) => {
-  const languageCode = req.query.language_code as string;
-  const result = await repository.findWords(languageCode);
+  const languageCode = req.query.language_code as string | undefined;
+  const text = req.query.text as string | undefined;
+  const result = await repository.findWords(languageCode, text);
   if (isError(result)) {
     res.status(500).json(result);
     return;
@@ -18,7 +19,7 @@ wordRouter.get('/', async (req, res) => {
 
 wordRouter.get('/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const result = await repository.findWord(id);
+  const result = await repository.findWordById(id);
   if (isError(result)) {
     res.status(500).json(result);
     return;
