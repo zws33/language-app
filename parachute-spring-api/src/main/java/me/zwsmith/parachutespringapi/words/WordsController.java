@@ -1,5 +1,6 @@
 package me.zwsmith.parachutespringapi.words;
 
+import me.zwsmith.parachutespringapi.domain.models.Word;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -8,34 +9,35 @@ import java.util.Optional;
 @RestController()
 @RequestMapping("/words")
 public class WordsController {
-    private final WordRepository wordRepository;
+    private final WordService wordService;
 
-    public WordsController(WordRepository wordRepository) {
-        this.wordRepository = wordRepository;
+    public WordsController(WordService wordService) {
+        this.wordService = wordService;
     }
 
-    @GetMapping("/")
-    public Iterable<Word> getWords() {
-        return wordRepository.findAll();
+    @GetMapping()
+    public List<Word> getWords(
+        @RequestParam(required = false, name = "language_code")
+        String languageCode,
+        @RequestParam(required = false, name = "word_text")
+        String wordText
+    ) {
+        return wordService.findWordsBy(languageCode, wordText);
     }
 
-    @GetMapping
-    public Iterable<Word> getWordsByLanguage(@RequestParam("language_code") String languageCode) {
-        return wordRepository.findAllByLanguageCode(languageCode);
-    }
 
     @GetMapping("/{id}")
     public Optional<Word> getWordById(@PathVariable Long id) {
-        return wordRepository.findById(id);
+        return wordService.findById(id);
     }
 
     @PostMapping("/")
-    public Iterable<Word> insertWords(@RequestBody List<Word> words) {
-        return wordRepository.saveAll(words);
+    public Word insertWord(@RequestBody Word word) {
+        return wordService.insertWord(word);
     }
 
     @DeleteMapping("/{id}")
     public void deleteWord(@PathVariable Long id) {
-        wordRepository.deleteById(id);
+        wordService.deleteById(id);
     }
 }

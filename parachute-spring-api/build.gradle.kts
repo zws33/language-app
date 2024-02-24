@@ -2,13 +2,13 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.2"
 	id("io.spring.dependency-management") version "1.1.4"
+    kotlin("jvm")
 }
 
 group = "me.zwsmith"
 version = "0.0.1-SNAPSHOT"
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -22,6 +22,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.withType<Test> {
@@ -30,4 +31,7 @@ tasks.withType<Test> {
 
 tasks.bootJar {
 	archiveFileName.set("app.jar")
+}
+kotlin {
+    jvmToolchain(21)
 }
