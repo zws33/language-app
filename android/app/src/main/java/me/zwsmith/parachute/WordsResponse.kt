@@ -11,10 +11,10 @@ data class WordsResponse(
 
 @Serializable
 data class Word(
-    @SerialName("word_id")
+    @SerialName("id")
     val id: Int,
-    @SerialName("word_text")
+    @SerialName("text")
     val text: String,
-    @SerialName("language_code")
+    @SerialName("languageCode")
     val languageCode: String
 )

@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val todosRepository: TodosRepository) :
+class MainViewModel @Inject constructor(private val todosRepository: WordsRepository) :
     ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -18,8 +18,8 @@ class MainViewModel @Inject constructor(private val todosRepository: TodosReposi
 
     fun getTodos() {
         viewModelScope.launch {
-            val todos = todosRepository.getTodos()
-            _uiState.emit(UiState.Data(todos))
+            val words = todosRepository.getTodos()
+            _uiState.emit(UiState.Data(words))
         }
     }
 }
@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(private val todosRepository: TodosReposi
 sealed class UiState {
     data object Loading : UiState()
     data class Data(
-        val todos: List<Todo>
+        val words: List<Word>
     ) : UiState()
 
     data object Error : UiState()

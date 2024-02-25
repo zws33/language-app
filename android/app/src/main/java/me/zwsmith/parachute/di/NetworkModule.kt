@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
-import me.zwsmith.parachute.TodoService
+import me.zwsmith.parachute.WordService
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -32,13 +32,13 @@ object NetworkModule {
     fun provideRetrofit(okHttp: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .client(okHttp)
-            .baseUrl("https://jsonplaceholder.typicode.com/")
+            .baseUrl("http://10.0.2.2:4000/")
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
 
     @Provides
-    fun provideTodoService(retrofit: Retrofit): TodoService {
-        return retrofit.create(TodoService::class.java)
+    fun provideTodoService(retrofit: Retrofit): WordService {
+        return retrofit.create(WordService::class.java)
     }
 }
