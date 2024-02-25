@@ -55,4 +55,9 @@ public class TranslationsService {
         return wordRepository.findByText(text)
             .flatMap(wordEntity -> translationRepository.findByWordText(wordEntity.wordText()));
     }
+
+    @NotNull
+    public Optional<Translation> getTranslationByWordId(Long wordId) {
+        return wordRepository.findById(wordId).flatMap(wordEntity -> translationRepository.findByWordId(wordEntity.wordId()));
+    }
 }

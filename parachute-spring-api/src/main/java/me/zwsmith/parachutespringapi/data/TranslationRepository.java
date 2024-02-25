@@ -14,16 +14,24 @@ import java.util.Optional;
 
 @Repository
 public interface TranslationRepository extends ListCrudRepository<TranslationEntity, Long> {
-    @Query("SELECT * FROM translation WHERE word_id_2 = :wordId OR word_id_1 = :wordId;")
-    Optional<TranslationEntity> findByWordId(int wordId);
+    @Query(value = """
+        SELECT w2.word_id as w2_id, w2.word_text as w2_text, w2.language_code as w2_language, w1.word_id as w1_id, w1.word_text as w1_text, w1.language_code as w1_language, t.translation_id 
+        FROM word w1
+        JOIN translation t ON w1.word_id = t.word_id_1
+        JOIN word w2 ON t.word_id_2 = w2.word_id 
+        WHERE word_id_2 = :wordId OR word_id_1 = :wordId;
+        """,
+        rowMapperClass = TranslationRowMapper.class
+    )
+    Optional<Translation> findByWordId(Long wordId);
 
     @Query(value = """
         SELECT w2.word_id as w2_id, w2.word_text as w2_text, w2.language_code as w2_language, w1.word_id as w1_id, w1.word_text as w1_text, w1.language_code as w1_language, t.translation_id
         FROM word w1
-                 JOIN translation t ON w1.word_id = t.word_id_1
-                 JOIN word w2 ON t.word_id_2 = w2.word_id
-        WHERE w2.word_text = :wordText
-           OR w1.word_text = :wordText;""",
+        JOIN translation t ON w1.word_id = t.word_id_1
+        JOIN word w2 ON t.word_id_2 = w2.word_id
+        WHERE w2.word_text = :wordText OR w1.word_text = :wordText;
+        """,
         rowMapperClass = TranslationRowMapper.class
     )
     Optional<Translation> findByWordText(String wordText);

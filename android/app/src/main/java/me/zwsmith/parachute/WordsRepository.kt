@@ -5,11 +5,11 @@ import kotlinx.coroutines.withContext
 import me.zwsmith.parachute.di.IoDispatcher
 import javax.inject.Inject
 
-class TodosRepository @Inject constructor(
+class WordsRepository @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val wordService: TodoService
+    private val wordService: WordService
 ) {
-    suspend fun getTodos(): List<Todo> = withContext(ioDispatcher) {
+    suspend fun getTodos(): List<Word> = withContext(ioDispatcher) {
         wordService.getAllTodos()
     }
 }
