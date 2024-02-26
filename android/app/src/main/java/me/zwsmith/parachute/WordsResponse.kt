@@ -2,12 +2,6 @@ package me.zwsmith.parachute
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonNames
-
-@Serializable
-data class WordsResponse(
-    val words: List<Word>
-)
 
 @Serializable
 data class Word(
