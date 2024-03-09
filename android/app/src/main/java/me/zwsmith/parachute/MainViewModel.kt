@@ -7,28 +7,52 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import me.zwsmith.parachute.common.domain.Translation
+import me.zwsmith.parachute.translations.data.TranslationRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val todosRepository: WordsRepository) :
-    ViewModel() {
+class MainViewModel @Inject constructor(
+    private val translationRepository: TranslationRepository
+) : ViewModel() {
+    private var sourceWordLanguage: Language = Language.ENGLISH
+    private var targetWordLanguage: Language = Language.SPANISH
+    private var sourceWordText: String = ""
+    private val _translation = MutableStateFlow<Translation?>(null)
+    val translation = _translation.asStateFlow()
+    val languages = Language.entries.map { it.code }
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+    fun onSourceLanguageSelect(languageCode: String) {
+        Language.entries
+            .firstOrNull { it.code == languageCode }
+            ?.let { sourceWordLanguage = it }
+    }
 
-    fun getTodos() {
+    fun onTargetLanguageSelect(languageCode: String) {
+        Language.entries
+            .firstOrNull { it.code == languageCode }
+            ?.let { targetWordLanguage = it }
+    }
+
+    fun onSourceTextChanged(text: String) {
+        sourceWordText = text
+    }
+
+    fun onTranslationSubmit() {
         viewModelScope.launch {
-            val words = todosRepository.getTodos()
-            _uiState.emit(UiState.Data(words))
+            if(sourceWordText.isNotBlank()){
+                _translation.value = translationRepository.getTranslation(
+                    sourceWordText,
+                    sourceWordLanguage,
+                    targetWordLanguage
+                )
+            }
         }
     }
 }
 
-sealed class UiState {
-    data object Loading : UiState()
-    data class Data(
-        val words: List<Word>
-    ) : UiState()
-
-    data object Error : UiState()
+enum class Language(val code: String) {
+    ENGLISH(code = "EN"),
+    SPANISH(code = "ES"),
+    FRENCH(code = "FR")
 }

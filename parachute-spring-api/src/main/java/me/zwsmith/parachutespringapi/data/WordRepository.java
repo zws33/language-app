@@ -1,30 +1,45 @@
 package me.zwsmith.parachutespringapi.data;
 
 import me.zwsmith.parachutespringapi.data.db.WordEntity;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
 @Repository
-public interface WordRepository extends ListCrudRepository<WordEntity, Long> {
-    @NotNull
-    @Query("SELECT * FROM word WHERE language_code = :languageCode")
-    List<WordEntity> findAllByLanguage(@Param("languageCode") String languageCode);
+public class WordRepository {
+    private final JdbcTemplate jdbcTemplate;
 
-    @NotNull
-    @Query("SELECT * FROM word WHERE word_text = :text LIMIT 1")
-    Optional<WordEntity> findByText(@Param("text") String text);
+    public WordRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-    @NotNull
-    @Query("SELECT * FROM word WHERE word_text = :text")
-    List<WordEntity> findAllByText(@Param("text") String text);
+    public Optional<WordEntity> insert(String text, String languageCode) {
+        var sql = """
+            INSERT INTO word (word_text, language_code) VALUES (?, ?) RETURNING *
+            """;
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Mapper(), text, languageCode));
+    }
 
-    @NotNull
-    @Query("SELECT * FROM word WHERE language_code = :languageCode AND word_text = :text")
-    List<WordEntity> findAllByLanguageAndText(@Param("languageCode") String languageCode, @Param("text") String text);
+    public Optional<WordEntity> findById(Long id) {
+        var sql = """
+            SELECT * FROM word WHERE word_id = ?;
+            """;
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Mapper(), id));
+    }
+
+    private static class Mapper implements RowMapper<WordEntity> {
+
+        @Override
+        public WordEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new WordEntity(
+                rs.getLong("word_id"),
+                rs.getString("word_text"),
+                rs.getString("language_code")
+            );
+        }
+    }
 }

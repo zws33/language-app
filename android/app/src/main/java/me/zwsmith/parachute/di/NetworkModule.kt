@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
-import me.zwsmith.parachute.WordService
+import me.zwsmith.parachute.translations.data.TranslationService
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -38,7 +38,7 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideTodoService(retrofit: Retrofit): WordService {
-        return retrofit.create(WordService::class.java)
+    fun provideTodoService(retrofit: Retrofit): TranslationService {
+        return retrofit.create(TranslationService::class.java)
     }
 }

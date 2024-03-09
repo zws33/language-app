@@ -1,4 +1,9 @@
 package me.zwsmith.parachutespringapi.domain.models;
 
-public record Word(Long id, String text, String languageCode) {
-}
+import org.springframework.lang.NonNull;
+
+public record Word(
+    @NonNull Long id,
+    @NonNull String text,
+    @NonNull String languageCode
+) {}
