@@ -6,34 +6,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController()
 @RequestMapping("/translations")
 public class TranslationsController {
-    private final TranslationsService getTranslations;
+    private final TranslationsService translationsService;
 
-    public TranslationsController(TranslationsService getTranslations) {
-        this.getTranslations = getTranslations;
+    public TranslationsController(TranslationsService translationsService) {
+        this.translationsService = translationsService;
     }
 
     @GetMapping
-    List<Translation> getTranslationByText(@RequestParam(name = "text", required = false) String wordText, @RequestParam(required = false) Long wordId) {
-        if (wordId != null) {
-            Optional<Translation> translation = getTranslations.getTranslationByWordId(wordId);
-            List<Translation> list = new ArrayList<>();
-            translation.ifPresent(list::add);
-            return list;
-        } else if (wordText != null){
-            Optional<Translation> translation = getTranslations.getTranslationByText(wordText);
-            List<Translation> list = new ArrayList<>();
-            translation.ifPresent(list::add);
-            return list;
-        } else {
-            return getTranslations.execute();
-        }
+    Optional<Translation> getTranslationByText(
+        @RequestParam() String text,
+        @RequestParam() String sourceLanguageCode,
+        @RequestParam() String targetLanguageCode
+    ) {
+        return translationsService.getTranslation(text, sourceLanguageCode, targetLanguageCode);
     }
 
 }
